@@ -2,6 +2,11 @@
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
 
+#include "renderer.h"
+
+using namespace ORTR;
+
+RenderOptions renderoptions;
 
 int main(){
     // Init GLFW
@@ -18,7 +23,7 @@ int main(){
 
     // Open a window and create its OpenGL context
     GLFWwindow* window;
-    window = glfwCreateWindow( 1024, 768, "OpenGLRender", NULL, NULL);
+    window = glfwCreateWindow( renderoptions.resolution.x, renderoptions.resolution.y, "OpenGLRender", NULL, NULL);
     if( window == NULL ){
         std::cerr << "Failed to open GLFW window." << std::endl;
         glfwTerminate();
@@ -28,15 +33,16 @@ int main(){
     
     // Init GL3W
     if (gl3wInit()) {
-            fprintf(stderr, "failed to initialize OpenGL\n");
+            std::cerr << "failed to initialize OpenGL" << std::endl;
             return -1;
     }
     if (!gl3wIsSupported(3, 2)) {
-            fprintf(stderr, "OpenGL 3.2 not supported\n");
+            std::cerr << "OpenGL 3.2 not supported" << std::endl;
             return -1;
     }
-    printf("OpenGL %s, GLSL %s\n", glGetString(GL_VERSION),
-            glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+    std::cout << "[ORTR]OpenGL " << glGetString(GL_VERSION) << 
+        " GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);

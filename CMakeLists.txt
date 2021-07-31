@@ -17,7 +17,9 @@ file(GLOB_RECURSE EXT_FILES
 set(SRCS ${SRC_FILES} ${EXT_FILES})
 
 include_directories(
+  ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/thirdparty/gl3w
+  ${CMAKE_SOURCE_DIR}/thirdparty/glm
 )
 
 find_package(OpenGL)
@@ -67,6 +69,13 @@ add_subdirectory("${GLFW_DIR}")
 target_link_libraries(${EXE_NAME} "glfw" "${GLFW_LIBRARIES}")
 target_include_directories(${EXE_NAME} PRIVATE "${GLFW_DIR}/include")
 target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
+
+# GLM
+set(GLM_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glm)
+add_subdirectory("${GLM_DIR}")
+target_link_libraries(${EXE_NAME} "glm" "${GLM_LIBRARIES}")
+target_include_directories(${EXE_NAME} PRIVATE "${GLM_DIR}/include")
+target_compile_definitions(${EXE_NAME} PRIVATE "GLM_INCLUDE_NONE")
 
 #--------------------------------------------------------------------
 # preproc
