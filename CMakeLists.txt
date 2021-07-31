@@ -10,7 +10,15 @@ file(GLOB_RECURSE SRC_FILES
     ${CMAKE_SOURCE_DIR}/src/*.cpp
 )
 
-set(SRCS ${SRC_FILES})
+file(GLOB_RECURSE EXT_FILES  
+    ${CMAKE_SOURCE_DIR}/thirdparty/gl3w/GL/*.c
+)
+
+set(SRCS ${SRC_FILES} ${EXT_FILES})
+
+include_directories(
+  ${CMAKE_SOURCE_DIR}/thirdparty/gl3w
+)
 
 find_package(OpenGL)
 
@@ -48,6 +56,17 @@ TARGET_LINK_LIBRARIES(${EXE_NAME} ${OPENGL_LIBRARIES})
 else()
 TARGET_LINK_LIBRARIES(${EXE_NAME} ${OPENGL_LIBRARIES} dl)
 endif()
+
+# GLFW
+set(GLFW_DIR ${CMAKE_SOURCE_DIR}/thirdparty/glfw-3.3.4)
+set(GLFW_BUILD_EXAMPLES OFF CACHE INTERNAL "Build the GLFW example programs")
+set(GLFW_BUILD_TESTS OFF CACHE INTERNAL "Build the GLFW test programs")
+set(GLFW_BUILD_DOCS OFF CACHE INTERNAL "Build the GLFW documentation")
+set(GLFW_INSTALL OFF CACHE INTERNAL "Generate installation target")
+add_subdirectory("${GLFW_DIR}")
+target_link_libraries(${EXE_NAME} "glfw" "${GLFW_LIBRARIES}")
+target_include_directories(${EXE_NAME} PRIVATE "${GLFW_DIR}/include")
+target_compile_definitions(${EXE_NAME} PRIVATE "GLFW_INCLUDE_NONE")
 
 #--------------------------------------------------------------------
 # preproc
