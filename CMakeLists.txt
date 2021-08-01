@@ -12,6 +12,8 @@ file(GLOB_RECURSE SRC_FILES
 
 file(GLOB_RECURSE EXT_FILES  
     ${CMAKE_SOURCE_DIR}/thirdparty/gl3w/GL/*.c
+    ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.h
+    ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.cpp
 )
 
 set(SRCS ${SRC_FILES} ${EXT_FILES})
@@ -20,6 +22,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/thirdparty/gl3w
   ${CMAKE_SOURCE_DIR}/thirdparty/glm
+  ${CMAKE_SOURCE_DIR}/thirdparty/imgui
 )
 
 find_package(OpenGL)
