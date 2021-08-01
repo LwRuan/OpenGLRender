@@ -2,6 +2,9 @@
 
 #include "camera.h"
 #include "renderer.h"
+#include "mesh.h"
+#include "material.h"
+#include "texture.h"
 
 #include <vector>
 
@@ -34,6 +37,22 @@ public:
 
     RenderOptions renderOptions;
 
-    
+    std::vector<Mesh> meshes;
+
+    std::vector<Indices> vertIndices;
+    std::vector<vec4> verticesUVX;
+    std::vector<vec4> normalsUVY;
+    std::vector<mat4> transforms;
+
+    std::vector<Material> materials;
+    std::vector<MeshInstance> MeshInstance;
+    bool instancesModified = false;
+
+    std::vector<Light> lights;
+
+    Camera* camera;
+
+    std::vector<Texture*> textures;
+    std::vector<unsigned char> textureMapsArray;
 };
 };
