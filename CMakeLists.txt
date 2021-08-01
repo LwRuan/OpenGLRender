@@ -14,6 +14,7 @@ file(GLOB_RECURSE EXT_FILES
     ${CMAKE_SOURCE_DIR}/thirdparty/gl3w/GL/*.c
     ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.h
     ${CMAKE_SOURCE_DIR}/thirdparty/imgui/*.cpp
+    ${CMAKE_SOURCE_DIR}/thirdparty/tinyobjloader/*.h
 )
 
 set(SRCS ${SRC_FILES} ${EXT_FILES})
@@ -23,6 +24,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/thirdparty/gl3w
   ${CMAKE_SOURCE_DIR}/thirdparty/glm
   ${CMAKE_SOURCE_DIR}/thirdparty/imgui
+  ${CMAKE_SOURCE_DIR}/thirdparty/tinyobjloader
 )
 
 find_package(OpenGL)

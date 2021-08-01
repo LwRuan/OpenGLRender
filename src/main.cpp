@@ -11,6 +11,39 @@
 using namespace ORTR;
 
 RenderOptions renderoptions;
+struct LoopData{
+    GLFWwindow* window;
+    bool show_imgui = true;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+};
+LoopData loopdata;
+
+void mainLoop(){
+    glfwPollEvents();
+
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+
+    if(loopdata.show_imgui){
+        ImGui::Begin("Render Settings", &loopdata.show_imgui);
+        ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+        ImGui::End();
+    }
+
+    ImGui::Render();
+    int display_w, display_h;
+    glfwGetFramebufferSize(loopdata.window, &display_w, &display_h);
+    glViewport(0, 0, display_w, display_h);
+    ImVec4& clear_color = loopdata.clear_color;
+    glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, 
+        clear_color.z * clear_color.w, clear_color.w);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glfwSwapBuffers(loopdata.window);
+}
 
 int main(){
     // Init GLFW
@@ -26,14 +59,13 @@ int main(){
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // We don't want the old OpenGL 
 
     // Open a window and create its OpenGL context
-    GLFWwindow* window;
-    window = glfwCreateWindow( renderoptions.resolution.x, renderoptions.resolution.y, "OpenGLRender", NULL, NULL);
-    if( window == NULL ){
+    loopdata.window = glfwCreateWindow( renderoptions.resolution.x, renderoptions.resolution.y, "OpenGLRender", NULL, NULL);
+    if( loopdata.window == NULL ){
         std::cerr << "Failed to open GLFW window." << std::endl;
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(loopdata.window);
     
     // Init GL3W
     if (gl3wInit()) {
@@ -45,11 +77,11 @@ int main(){
             return -1;
     }
 
-    std::cout << "[ORTR]OpenGL " << glGetString(GL_VERSION) << 
+    std::cout << "[Renderer]OpenGL " << glGetString(GL_VERSION) << 
         " GLSL " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     // Ensure we can capture the escape key being pressed below
-    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    glfwSetInputMode(loopdata.window, GLFW_STICKY_KEYS, GL_TRUE);
 
     // Init ImGui
     IMGUI_CHECKVERSION();
@@ -58,47 +90,21 @@ int main(){
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsClassic();
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplGlfw_InitForOpenGL(loopdata.window, true);
     const char* glsl_version = "#version 150";
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    bool show_imgui = true;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     // Main Loop
     do{
-        glfwPollEvents();
-
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        if (show_imgui)
-        {
-            ImGui::Begin("Hello ImGui", &show_imgui);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-            ImGui::Text("Hello from window");
-            if (ImGui::Button("Close Me"))
-                show_imgui = false;
-            ImGui::End();
-        }
-
-        ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window, &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
-        glfwSwapBuffers(window);
-
-    }while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-        glfwWindowShouldClose(window) == 0 );
+        mainLoop();
+    }while( glfwGetKey(loopdata.window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+        glfwWindowShouldClose(loopdata.window) == 0 );
 
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    glfwDestroyWindow(window);
+    glfwDestroyWindow(loopdata.window);
     glfwTerminate();
 }
